@@ -1,0 +1,76 @@
+<project default="compile">
+
+    <target name="compile">
+        <mkdir dir="classes"/>
+        <javac srcdir="." destdir="classes" fork="yes" executable="${JAVAC}">
+            <compilerarg value="-Xlint:unchecked"/>
+        </javac>
+    </target>
+
+    <target name="clean">
+        <delete dir="classes"/>
+        <delete dir="lib"/>
+    </target>
+
+    <target name="jar" depends="compile">
+       <property environment="env"/>
+        <mkdir dir="lib"/> 
+        <copy todir="classes" >  
+            <fileset dir=".">  
+                <include name="images/**"/>
+            </fileset>
+        </copy>
+
+        <!-- Instead, jar all classfiles individually -->
+
+        <echo message="Creating JAR files"/>  
+
+        <jar destfile="lib/TransformApplet.jar" manifest="manifest/Transform/manifest.mf">
+            <filelist dir="classes">
+               <file name="Transform.class"/>
+               <file name="TransPanel.class"/> 
+            </filelist>
+        </jar>
+
+        <jar destfile="lib/ClipImageApplet.jar" manifest="manifest/ClipImage/manifest.mf">
+            <filelist dir="classes" files="ClipImage.class"/>
+            <fileset dir="." includes="images/clouds.jpg"/>
+        </jar>
+
+
+        <jar destfile="lib/StarryApplet.jar" manifest="manifest/Starry/manifest.mf">
+            <filelist dir="classes" files="Starry.class,StarPanel.class"/>
+            <fileset dir="." includes="images/Starry.gif"/>
+        </jar>
+
+        <jar destfile="lib/CompositeApplet.jar" manifest="manifest/Composite/manifest.mf">
+            <filelist dir="classes">
+               <file name="Composite.class"/>
+               <file name="CompPanel.class"/> 
+            </filelist>
+        </jar>
+
+        <jar destfile="lib/PearApplet.jar" manifest="manifest/Pear/manifest.mf">
+            <filelist dir="classes" files="Pear.class"/>
+        </jar>
+
+
+        <jar destfile="lib/ShapeMoverApplet.jar" manifest="manifest/ShapeMover/manifest.mf">
+            <filelist dir="classes">
+               <file name="ShapeMover.class"/>
+               <file name="SMCanvas.class"/> 
+            </filelist>
+        </jar>
+
+        <jar destfile="lib/HitTestSampleApplet.jar" manifest="manifest/HitTestSample/manifest.mf">
+            <filelist dir="classes">
+               <file name="HitTestSample.class"/>
+               <file name="HitTestSample$HitPane.class"/>
+               <file name="HitTestSample$HitTestMouseListener.class"/> 
+            </filelist>
+        </jar>
+
+    </target>
+
+</project>
+

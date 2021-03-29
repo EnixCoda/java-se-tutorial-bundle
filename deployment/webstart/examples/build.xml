@@ -1,0 +1,75 @@
+<project default="compile-all">
+    <target name="compile-all">
+        <subant target="compile" failonerror="false">
+            <fileset dir=".">
+                <include name="*/build.xml"/>
+            </fileset>
+        </subant>
+    </target>
+    <target name="compile-abort">
+        <subant target="compile">
+            <fileset dir=".">
+                <include name="*/build.xml"/>
+            </fileset>
+        </subant>
+    </target>
+    <target name="clean">
+        <delete dir="dist"/>
+        <delete dir="zipfiles"/>
+        <subant target="clean">
+            <fileset dir=".">
+                <include name="*/build.xml"/>
+            </fileset>
+        </subant>
+    </target>
+    <target name="jar">
+        <property environment="env"/>
+        <subant target="jar" failonerror="false">
+            <fileset dir=".">
+                <include name="*/build.xml"/>
+            </fileset>
+        </subant>
+
+        <!-- Copy everything in the project_directory/dist into 
+             webstart/examples/dist: -->
+         
+        <copy todir="dist">
+            <fileset dir="${basedir}" casesensitive="yes">
+                <include name="**/dist/**"/>
+            </fileset>
+         
+            <!-- I have project_name/dist/some_file
+                  I want project_name/some_file -->
+             
+            <mapper type="regexp" from="^(.*)/dist/(.*)" to="\1/\2" />
+        </copy>        
+
+    </target>
+
+    <target name="zip">
+        <subant genericantfile="${ant.file}" target="do-zip">
+            <dirset dir="." includes="webstart_*"/>
+            <property name="zip.dir" location="zipfiles"/>
+            <property name="top" location="."/>
+        </subant>
+        <zip zipfile="zipfiles/JavaWebStartTutorialExamples.zip">
+            <fileset dir=".">
+                <include name="webstart_*/"/>
+                <exclude name="*/build/"/>
+                <exclude name="*/dist/"/>
+                <exclude name="*/nbproject/private/"/>
+            </fileset>
+        </zip>
+    </target>
+    <target name="do-zip">
+        <pathconvert dirsep="-" property="name">
+            <path location="."/>
+            <mapper type="glob" from="${top}${file.separator}*" to="*"/>
+        </pathconvert>
+        <mkdir dir="${zip.dir}"/>
+        <zip zipfile="${zip.dir}/${name}.zip">
+            <zipfileset dir="." prefix="${name}"/>
+        </zip>
+    </target>
+</project>
+
